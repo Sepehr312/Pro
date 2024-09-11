@@ -1,0 +1,20 @@
+<!-- category section starts  -->
+<%if( category?.length) { %>
+<section class="category" id="category">
+  <h1 class="heading">خرید بر اساس طبقه بندی</h1>
+
+  <div class="box-container">
+    <% category?.forEach((item, index) => { %>
+      
+    <div class="box">
+      <img src="/category/<%-item.image%>" alt="" />
+      <div class="content">
+        <h3><%-item.title%></h3>
+        <a href="<%-item.btnURL%>" class="btn">الان خرید کن</a>
+      </div>
+    </div>
+    <%})%>
+  </div>
+</section>
+<%}%>
+<!-- category section ends -->

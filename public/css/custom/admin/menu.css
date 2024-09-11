@@ -1,0 +1,138 @@
+@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css');
+
+body {
+  font-family: 'BYekan', sans-serif;
+}
+.sidebar a span {
+  margin-left: 10px;
+}
+.menu-toggle-icon {
+  cursor: pointer;
+  font-size: 1.25rem;
+  margin-left: 5px;
+}
+
+.nav-item .menu-toggle-icon:hover {
+  color: white;
+}
+
+.sidebar a:hover {
+  background-color: #2a7832;
+  color: white;
+  padding-left: 10px;
+}
+
+.main-content {
+  margin-right: 200px;
+  padding: 20px;
+  transition: margin-right 0.3s ease-in-out;
+}
+.dropdown-menu-green,
+.dropdown-item {
+  border: none !important;
+}
+
+.dropdown-menu-green .dropdown-item {
+  background-color: #0a9943d5;
+}
+
+.icon-size {
+  font-size: 1.5rem;
+  margin-left: 10px;
+}
+
+.menu-icon-size {
+  font-size: 1.25rem;
+  margin-left: 10px;
+}
+.toggle-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background-color: #0a9943d5;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  z-index: 100;
+}
+
+.sidebar {
+  direction: rtl;
+  width: 200px;
+  height: 100vh;
+  background-color: #0a9943d5;
+  position: fixed;
+  top: 0;
+  right: 0;
+  transition: all 0.3s ease;
+  overflow-y: auto; /* Enables vertical scrolling */
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+  z-index: 99;
+}
+
+
+.sidebar.minimized {
+  width: 100px;
+}
+
+.sidebar.minimized ul span {
+  display: none;
+}
+
+.sidebar.minimized .icon-size {
+  font-size: 1.5rem;
+}
+
+.sidebar ul {
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  list-style: none;
+}
+
+.sidebar ul li a {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.sidebar ul li a i {
+  margin-right: 10px;
+}
+
+.sidebar ul li a:hover {
+  background-color: white;
+  color: #3a9943;
+}
+.sidebar .minimized a:hover::before {
+  content: attr(data-tooltip);
+  position: fixed;
+  background-color: #3a9943;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  right: 60px;
+  white-space: nowrap;
+
+  z-index: 99;
+}
+@media (max-width: 768px) {
+  .sidebar {
+    right: -200px;
+  }
+
+  .sidebar.show {
+    right: 0;
+  }
+
+  .toggle-btn {
+    right: 10px;
+  }
+}

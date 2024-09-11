@@ -1,0 +1,118 @@
+<style>
+  .table-container {
+    direction: rtl;
+    text-align: right;
+  }
+  .table img {
+    max-width: 100px;
+    max-height: 50px;
+  }
+  .m-btn {
+    width: 100%;
+  }
+</style>
+
+<%- include('../partials/message') %> <%-include('../partials/errore')%>
+<h2 class="d-flex justify-content-center mb-5">تنظیمات دسته بندی</h2>
+
+<div class="container mt-4 table-container">
+  <div class="row mb-4 justify-content-between">
+    <div class="col-12 col-md-3">
+      <form action="/admin/category/addcategory" method="get">
+        <button type="submit" class="btn btn-success mb-2 m-btn">
+          افزودن دسته‌بندی
+        </button>
+      </form>
+    </div>
+    <div class="col-12 col-md-7">
+      <input
+        type="text"
+        id="searchBox"
+        class="form-control"
+        placeholder="جستجو..."
+      />
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>عکس</th>
+          <th>عنوان</th>
+          <th>URL</th>
+          <th>ویرایش</th>
+          <th>حذف</th>
+        </tr>
+      </thead>
+      <tbody id="tableContent">
+        <!-- Example row -->
+        <% categoryData.forEach(item => { %>
+        <tr>
+          <td><img src="/category/<%= item.image %>" alt="" /></td>
+          <td><%= item.title %></td>
+          <td><%= item.btnURL %></td>
+          <td>
+            <form action="/admin/category/updatecategory" method="get">
+              <input type="hidden" name="_id" value="<%= item._id %>" />
+              <button type="submit" class="btn btn-outline-success">
+                ویرایش
+              </button>
+            </form>
+          </td>
+          <td>
+            <form
+              action="/admin/category/deletecategory"
+              method="post"
+              enctype="multipart/form-data"
+            >
+              <input type="hidden" name="id" value="<%= item._id %>" />
+              <button type="submit" class="btn btn-outline-danger delete-btn">
+                حذف
+              </button>
+            </form>
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll(".delete-btn").forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault(); // از ارسال خودکار فرم جلوگیری می‌کند
+
+      Swal.fire({
+        title: "آیا مطمئن هستید؟",
+        text: "!این عمل غیر قابل بازگشت است",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3a9943",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "!بله، حذف کن",
+        cancelButtonText: "لغو",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.closest("form").submit(); // فرم حذف را ارسال می‌کند
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  document.getElementById("searchBox").addEventListener("keyup", function () {
+    var filter = this.value.toUpperCase();
+    var rows = document.querySelector("#tableContent").rows;
+
+    for (var i = 0; i < rows.length; i++) {
+      var title = rows[i].cells[1].textContent.toUpperCase();
+      if (title.indexOf(filter) > -1) {
+        rows[i].style.display = "";
+      } else {
+        rows[i].style.display = "none";
+      }
+    }
+  });
+</script>

@@ -1,0 +1,302 @@
+<!-- custom css file link  -->
+<link rel="stylesheet" href="/css/custom/admin/slider.css" />
+<div class="container mt-5">
+  <h2 class="d-flex justify-content-center mb-4">تنظیمات اسلایدر</h2>
+
+  <form
+    id="sliderForm"
+    action="/admin/dashboard/slider"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <div id="sliderWrapper" class="slider-wrapper">
+      <div id="slidesContainer" class="slides-container">
+        <% slideFieldData?.forEach((element, index) => { %>
+        <div class="slide-form">
+          <input type="hidden" name="id" value="<%-element._id%>" />
+          <input
+            type="hidden"
+            id="hiddenfile<%- index + 1 %>"
+            value="<%- element.image %>"
+          />
+          <div
+            class="upload-container"
+            onclick="document.getElementById('image<%- index + 1 %>').click()"
+          >
+            <img src="/slider/<%- element.image %>" alt="تصویر آپلود شده" />
+            <input
+              type="file"
+              id="image<%- index + 1 %>"
+              name="image"
+              class="sliderimageinput"
+              accept="image/*"
+              onchange="showPreview(this, <%- index + 1 %>)"
+            />
+            <span class="add-icon"><i class="fas fa-image"></i></span>
+          </div>
+          <div class="slide-content">
+            <input
+              type="text"
+              id="title<%- index + 1 %>"
+              name="title"
+              class="form-control"
+              placeholder="عنوان اسلاید"
+              value="<%- element.title %>"
+              oninput="updateSlideContent(<%- index + 1 %>)"
+            />
+            <textarea
+              id="description<%- index + 1 %>"
+              name="description"
+              class="form-control"
+              placeholder="توضیحات اسلاید"
+              oninput="updateSlideContent(<%- index + 1 %>)"
+            >
+<%- element.description %></textarea
+            >
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <div class="slider-controls">
+        <button type="button" id="prevSlide" onclick="navigateSlide(-1)">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button type="button" id="nextSlide" onclick="navigateSlide(1)">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+    <div id="slideIndicator" class="slide-indicator mb-4">صفحه 1 از 1</div>
+    <div class="d-flex justify-content-center btn-slider">
+      <div class="btn-group" role="group" aria-label="Basic example">
+        <button
+          type="button"
+          id="submitslider1"
+          onclick="submitSlider()"
+          class="btn btn-success"
+        >
+          <i class="fas fa-check"></i><span>ثبت اسلاید</span>
+        </button>
+        <button type="button" class="btn btn-danger" onclick="deleteSlide()">
+          <i class="fas fa-trash"></i><span>حذف اسلاید</span>
+        </button>
+        <button type="button" class="btn btn-primary" onclick="addSlide()">
+          <i class="fas fa-plus"></i><span>افزودن اسلاید</span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+                  let slideCount = <%- slideFieldData.length || 0 %>;
+
+                      let currentSlide = 0;
+
+                      function showPreview(input, index) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const container = document.querySelector(
+                    `#slidesContainer .slide-form:nth-child(${index}) .upload-container`
+                );
+                container.innerHTML = `<img src="${e.target.result}" alt="تصویر آپلود شده">`;
+            };
+            reader.readAsDataURL(file);
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            $.ajax({
+                url: "/admin/slider/slideruploadimage",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    document.getElementById(`hiddenfile${index}`).value = response.data;
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error:", error);
+                },
+            });
+        } else {
+            // زمانی که تصویری انتخاب نشده است
+            document.getElementById(`hiddenfile${index}`).value = '';
+        }
+    }
+
+                      function submitSlider() {
+        var isValid = true;
+        var slidesArray = [];
+
+        for (let i = 1; i <= slideCount; i++) {
+            let slideObj = {};
+            let image = document.querySelector(`#hiddenfile${i}`).value;
+
+            if (!image) {
+                isValid = false;
+                Swal.fire({
+                    title: '!خطا',
+                    text: `تصویر اسلاید ${i} انتخاب نشده است`,
+                    icon: 'error',
+                    confirmButtonText: 'باشه'
+                });
+                break;
+            }
+
+            let slideId = document.querySelector(`#slidesContainer .slide-form:nth-child(${i}) input[name='id']`).value;
+            let title = document.querySelector(`#title${i}`).value;
+            let description = document.querySelector(`#description${i}`).value;
+
+            slideObj['id'] = slideId || "";
+            slideObj['image'] = image;
+            slideObj['title'] = title;
+            slideObj['description'] = description;
+
+            slidesArray.push(slideObj);
+        }
+
+        if (isValid) {
+      $.ajax({
+          url: "/admin/slider/updateslides",
+          type: "POST",
+          data: JSON.stringify(slidesArray),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function (success) {
+              Swal.fire({
+                  title: '!عملیات موفق',
+                  text: '.اسلایدر با موفقیت ثبت شد',
+                  icon: 'success',
+                  confirmButtonText: 'باشه'
+              }).then(() => {
+                  location.reload();
+              });
+          },
+          error: function (xhr, status, error) {
+              Swal.fire({
+                  title: '!خطا',
+                  text: '.ثبت اسلایدر با خطا مواجه شد',
+                  icon: 'error',
+                  confirmButtonText: 'باشه'
+              });
+          }
+      });
+  }
+
+    }
+
+                      function addSlide() {
+              slideCount++;
+              const slidesContainer = document.getElementById("slidesContainer");
+              const newSlideForm = `
+                  <div class="slide-form">
+                      <input type="hidden" name="id" value="" />
+                      <input type="hidden" id="hiddenfile${slideCount}" />
+                      <div class="upload-container" onclick="document.getElementById('image${slideCount}').click()">
+                          <input type="file" id="image${slideCount}" accept="image/*" onchange="showPreview(this, ${slideCount})">
+                          <span class="add-icon"><i class="fas fa-image"></i></span>
+                      </div>
+                      <div class="slide-content">
+                          <input type="text" id="title${slideCount}" class="form-control" placeholder="عنوان اسلاید" oninput="updateSlideContent(${slideCount})">
+                          <textarea id="description${slideCount}" class="form-control" placeholder="توضیحات اسلاید" oninput="updateSlideContent(${slideCount})"></textarea>
+                      </div>
+                  </div>
+              `;
+              slidesContainer.insertAdjacentHTML("beforeend", newSlideForm);
+
+              currentSlide = slideCount - 1; // انتقال به اسلاید آخر
+              updateIndicator();
+              updateButtons();
+              navigateSlide(0); // بروز رسانی نمایش
+          }
+
+                      function navigateSlide(direction) {
+                        currentSlide += direction;
+                        const slideWidth = document.querySelector(".slide-form").offsetWidth;
+                        document.getElementById("slidesContainer").style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+                        updateIndicator();
+                        updateButtons();
+                      }
+
+                      function updateIndicator() {
+                        document.getElementById("slideIndicator").textContent = `صفحه ${currentSlide + 1} از ${slideCount}`;
+                      }
+
+                      function updateButtons() {
+                        document.getElementById("prevSlide").disabled = currentSlide === 0;
+                        document.getElementById("nextSlide").disabled = currentSlide === slideCount - 1;
+                      }
+
+                      function deleteSlide() {
+            if (slideCount > 1) {
+                Swal.fire({
+                    title: 'آیا مطمئن هستید؟',
+                    text: "!این عمل غیر قابل بازگشت است",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3a9943',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '!بله، حذف کن',
+                    cancelButtonText: 'لغو'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const slidesContainer = document.getElementById("slidesContainer");
+                        const slideToDelete = slidesContainer.children[currentSlide];
+
+                        const slideId = slideToDelete.querySelector("input[name='id']").value;
+
+                        slidesContainer.removeChild(slideToDelete);
+                        slideCount--;
+
+                        if (slideId) {
+                            $.ajax({
+                                url: "/admin/slider/deleteslide",
+                                type: "POST",
+                                data: JSON.stringify({ id: slideId }),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (response) {
+                                    Swal.fire({
+                                        title: '!عملیات موفق',
+                                        text: '.اسلاید با موفقیت حذف شد',
+                                        icon: 'success',
+                                        confirmButtonText: 'باشه'
+                                      }).then(() => {
+                  location.reload();
+              });
+                                },
+                                error: function (xhr, status, error) {
+                                    Swal.fire({
+                                        title: '!خطا',
+                                        text: '.حذف اسلاید با خطا مواجه شد',
+                                        icon: 'error',
+                                        confirmButtonText: 'باشه'
+                                    });
+                                }
+
+                            });
+                        }
+
+                        if (currentSlide > 0) {
+                            currentSlide--;
+                        }
+                        navigateSlide(0);
+                    }
+                });
+            } else {
+                Swal.fire({
+                    title: '!خطا',
+                    text: '!نمی‌توانید تنها اسلاید باقی مانده را حذف کنید',
+                    icon: 'error',
+                    confirmButtonText: 'باشه'
+                });
+            }
+        }
+
+                      updateButtons();
+                      updateIndicator();
+</script>

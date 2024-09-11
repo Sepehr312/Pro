@@ -1,0 +1,21 @@
+<!-- home section starts  -->
+
+<section class="home" id="home">
+  <div class="swiper-container home-slider">
+    <div class="swiper-wrapper">
+      <% slider?.forEach((item, index) => { %>
+      <div class="swiper-slide">
+        <div class="box" style="background: url(/slider/<%-item.image%>)">
+          <div class="content">
+            <span><%-item.description%></span>
+            <h3><%-item.title%></h3>
+          </div>
+        </div>
+      </div>
+      <%})%>
+    </div>
+    <div class="swiper-pagination"></div>
+  </div>
+</section>
+
+<!-- home section ends -->

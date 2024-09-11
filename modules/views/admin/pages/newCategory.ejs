@@ -1,0 +1,63 @@
+<style>
+  body {
+    text-align: right;
+  }
+  .form-label {
+    text-align: right;
+    display: block;
+  }
+  h2 {
+    text-align: center;
+  }
+  input {
+    direction: rtl;
+  }
+  .rtl {
+    direction: rtl;
+  }
+</style>
+<%-include('../partials/errore')%>
+<div class="container">
+  <h2 class="mb-4">فرم دسته‌بندی</h2>
+  <form
+    action="/admin/category/sortecategory"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <div class="mb-3">
+      <label for="imageInput" class="form-label">آپلود عکس</label>
+      <input
+        type="file"
+        class="form-control"
+        id="imageInput"
+        accept="image/*"
+        name="image"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="titleInput" class="form-label">عنوان</label>
+      <input
+        type="text"
+        class="form-control"
+        id="titleInput"
+        placeholder="عنوان دسته‌بندی"
+        name="title"
+        value="<%-category?.title %>"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="buttonUrlInput" class="form-label">دکمه URL</label>
+      <input
+        type="url"
+        class="form-control"
+        id="buttonUrlInput"
+        placeholder="http://"
+        name="btnURL"
+        value="<%-category?.btnURL %>"
+      />
+    </div>
+    <div class="d-grid gap-2">
+      <button type="submit" class="btn btn-success">ارسال</button>
+    </div>
+  </form>
+</div>

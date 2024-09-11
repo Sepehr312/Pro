@@ -1,0 +1,138 @@
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  rel="stylesheet"
+/>
+<link rel="stylesheet" href="/css/custom/admin/information.css" />
+<%if(informationData?.length) { %> <% informationData?.forEach(item => { %>
+<div class="container">
+  <%- include('../partials/message') %> <%-include('../partials/errore')%>
+  <div class="card shadow-sm p-5">
+    <form
+      id="editForm"
+      method="get"
+      action="/admin/information/updateinformation"
+    >
+      <button type="submit" class="btn edit-btn">
+        <i class="fas fa-pencil-alt"></i>
+      </button>
+    </form>
+
+    <form
+      id="deleteForm"
+      method="post"
+      action="/admin/information/deleteinformation"
+    >
+      <button type="submit" class="btn delete-btn">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </form>
+
+    <form id="addForm" method="get" action="/admin/information/addinformation">
+      <button type="submit" class="btn add-btn">
+        <i class="fas fa-plus"></i>
+      </button>
+    </form>
+    <h2 class="text-center mb-5">تنظیمات راهای ارتباط با ما</h2>
+    <div id="result">
+      <% if (item?.phone) { %>
+      <div class="result-item mt-4">
+        <i class="fas fa-phone-alt"></i><%= item?.phone %>
+      </div>
+      <% } %> <% if (item?.telegram) { %>
+      <div class="result-item text-break">
+        <i class="fab fa-telegram-plane"></i>
+        <a href="<%= item?.telegram %>" target="_blank"
+          ><%= item?.telegram %></a
+        >
+      </div>
+      <% } %> <% if (item?.linkedin) { %>
+      <div class="result-item text-break">
+        <i class="fab fa-linkedin"></i>
+        <a href="<%= item?.linkedin %>" target="_blank"
+          ><%= item?.linkedin %></a
+        >
+      </div>
+      <% } %> <% if (item?.instagram) { %>
+      <div class="result-item text-break">
+        <i class="fab fa-instagram"></i>
+        <a href="<%= item?.instagram %>" target="_blank"
+          ><%= item?.instagram %></a
+        >
+      </div>
+      <% } %> <% if (item?.twitter) { %>
+      <div class="result-item text-break">
+        <i class="fab fa-twitter"></i>
+        <a href="<%= item?.twitter %>" target="_blank"><%= item?.twitter %></a>
+      </div>
+      <% } %> <% if (item?.facebook) { %>
+      <div class="result-item text-break">
+        <i class="fab fa-facebook-f"></i>
+        <a href="<%= item?.facebook %>" target="_blank"
+          ><%= item?.facebook %></a
+        >
+      </div>
+      <% } %> <% if (item?.about) { %>
+      <div class="result-item">
+        <i class="fas fa-info-circle"></i><%= item?.about %>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<% })%> <%}else{%>
+<h2 class="text-center mb-5">تنظیمات راهای ارتباط با ما</h2>
+<div class="container mt-5">
+  <%- include('../partials/message') %> <%-include('../partials/errore')%>
+  <form action="/admin/information/addinformation" method="get">
+    <button type="submit" class="custom-button">
+      <i class="bi bi-plus-circle"></i>
+    </button>
+  </form>
+</div>
+<%}%>
+<script>
+  document.querySelectorAll(".delete-btn").forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault(); // از ارسال خودکار فرم جلوگیری می‌کند
+
+      Swal.fire({
+        title: "آیا مطمئن هستید؟",
+        text: "!این عمل غیر قابل بازگشت است",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3a9943",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "!بله، حذف کن",
+        cancelButtonText: "لغو",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.closest("form").submit(); // فرم حذف را ارسال می‌کند
+        }
+      });
+    });
+  });
+  document.querySelectorAll(".add-btn").forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault(); // از ارسال خودکار فرم جلوگیری می‌کند
+
+      Swal.fire({
+        title: "آیا مطمئن هستید؟",
+        text: "!با این کار اطلاعات جدید جایگزین اطلاعات کونونی میشود",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3a9943",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "!بله",
+        cancelButtonText: "لغو",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.closest("form").submit(); // فرم حذف را ارسال می‌کند
+        }
+      });
+    });
+  });
+</script>

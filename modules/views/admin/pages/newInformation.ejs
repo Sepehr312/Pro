@@ -1,0 +1,121 @@
+<link rel="stylesheet" href="/css/custom/admin/information.css" />
+
+<div class="container box-border">
+  <%-include('../partials/errore')%>
+  <form action="/admin/information/sortinformation" method="post">
+    <div class="mb-4 position-relative">
+      <div class="input-group">
+        <span class="input-group-text"
+          ><i class="fas fa-phone-alt form-icon"></i
+        ></span>
+        <input
+          type="text"
+          class="form-control"
+          name="phone"
+          id="phone"
+          placeholder="شماره تلفن"
+          value="<%= information ? information.phone : '' %>"
+        />
+      </div>
+    </div>
+
+    <div class="mb-4 position-relative">
+      <div class="input-group">
+        <span class="input-group-text"
+          ><i class="fab fa-telegram-plane form-icon"></i
+        ></span>
+        <input
+          type="url"
+          class="form-control"
+          name="telegram"
+          id="telegram"
+          placeholder="http://"
+          value="<%-information?.telegram%>"
+        />
+      </div>
+    </div>
+
+    <div class="mb-4 position-relative">
+      <div class="input-group">
+        <span class="input-group-text"
+          ><i class="fab fa-linkedin form-icon"></i
+        ></span>
+        <input
+          type="url"
+          class="form-control"
+          name="linkedin"
+          id="linkedin"
+          placeholder="http://"
+          value="<%-information?.linkedin%>"
+        />
+      </div>
+    </div>
+
+    <div class="mb-4 position-relative">
+      <div class="input-group">
+        <span class="input-group-text"
+          ><i class="fab fa-instagram form-icon"></i
+        ></span>
+        <input
+          type="url"
+          class="form-control"
+          name="instagram"
+          id="instagram"
+          placeholder="http://"
+          value="<%-information?.instagram%>"
+        />
+      </div>
+    </div>
+
+    <div class="mb-4 position-relative">
+      <div class="input-group">
+        <span class="input-group-text"
+          ><i class="fab fa-twitter form-icon"></i
+        ></span>
+        <input
+          type="url"
+          class="form-control"
+          name="twitter"
+          id="twitter"
+          placeholder="http://"
+          value="<%-information?.twitter%>"
+        />
+      </div>
+    </div>
+
+    <div class="mb-4 position-relative">
+      <div class="input-group">
+        <span class="input-group-text"
+          ><i class="fab fa-facebook-f form-icon"></i
+        ></span>
+        <input
+          type="url"
+          class="form-control"
+          name="facebook"
+          id="facebook"
+          placeholder="http://"
+          value="<%-information?.facebook%>"
+        />
+      </div>
+    </div>
+
+    <div class="mb-4 position-relative">
+      <div class="input-group">
+        <span class="input-group-text about-icon"
+          ><i class="fas fa-info-circle form-icon"></i
+        ></span>
+        <textarea
+          class="form-control"
+          name="about"
+          id="about"
+          rows="4"
+          placeholder="درباره ما"
+        >
+<%-information?.about%></textarea
+        >
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">ذخیره</button>
+  </form>
+</div>

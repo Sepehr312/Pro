@@ -1,0 +1,57 @@
+<!-- deal section starts  -->
+<style>
+  .deal-button {
+    background-color: #3a9943; /* Green color for the button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+    width: 30%;
+    margin-top: 15px;
+  }
+
+  .deal-button:hover {
+    background-color: #2d7a35; /* Darker green on hover */
+  }
+</style>
+<%if( deal?.length) { %>
+<section class="deal" id="deal">
+  <h1 class="heading">معامله روز</h1>
+
+  <div class="row">
+    <% deal?.forEach((item, index) => { %>
+    <div class="content">
+      <h3 class="title"><%= item.title %></h3>
+      <p><%= item.description %></p>
+      <div class="count-down">
+        <div class="box">
+          <h3 id="day"><%= item.days %></h3>
+          <span>روز</span>
+        </div>
+        <div class="box">
+          <h3 id="hour"><%= item.hours %></h3>
+          <span>ساعت</span>
+        </div>
+        <div class="box">
+          <h3 id="minute"><%= item.minutes %></h3>
+          <span>دقیقه</span>
+        </div>
+        <div class="box">
+          <h3 id="second"><%= item.seconds %></h3>
+          <span>ثانیه</span>
+        </div>
+      </div>
+      <a href="<%-item.btnURL%>" class="deal-button">معامله را بررسی کنید</a>
+    </div>
+
+    <div class="image">
+      <img src="/deal/<%= item.image %>" alt="" />
+    </div>
+    <%})%>
+  </div>
+</section>
+<%}%>
+<!-- deal section ends -->

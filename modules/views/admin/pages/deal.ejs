@@ -1,0 +1,275 @@
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap");
+
+  body {
+    background-color: #f0f2f5;
+    font-family: "Vazirmatn", sans-serif;
+  }
+
+  .deal-of-the-day {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .deal-of-the-day img {
+    border-radius: 10px;
+    max-height: 300px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  .label-text {
+    color: white;
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    background-color: #666; /* Gray background */
+    padding: 5px;
+  }
+
+  .static-value {
+    display: block;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 1.5rem;
+    border: 1px solid #666; /* Gray border */
+    margin-bottom: 10px;
+  }
+
+  .deal-button {
+    background-color: #3a9943; /* Green color for the button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .deal-button:hover {
+    background-color: #2d7a35; /* Darker green on hover */
+  }
+
+  .custom-button {
+    width: 100%;
+    height: 400px;
+    background-color: #f8f9fa9a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+  }
+
+  .custom-button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .custom-button i {
+    font-size: 2rem;
+    color: #3a9943;
+  }
+  .right {
+    direction: rtl;
+  }
+  @media (max-width: 768px) {
+    .deal-of-the-day {
+      padding: 15px;
+      margin: 15px 0;
+    }
+
+    .deal-button {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+
+    .static-value {
+      font-size: 1.2rem;
+    }
+
+    .custom-button {
+      height: 300px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .deal-button {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    .static-value {
+      font-size: 1rem;
+    }
+
+    .custom-button {
+      height: 250px;
+    }
+  }
+</style>
+
+<%- include('../partials/message') %> <%-include('../partials/errore')%>
+<h2 class="d-flex justify-content-center mb-4">تنظیمات معامله روز</h2>
+<% if (dealData?.length) { %> <% dealData.forEach(item => { %>
+<div class="container">
+  <div class="deal-of-the-day row g-4 align-items-start">
+    <div class="col-md-4 text-center">
+      <img
+        id="uploadedImage"
+        src="/deal/<%= item.image %>"
+        class="img-fluid mb-3"
+        alt="تصویر معامله روز"
+      />
+    </div>
+    <div class="col-md-8 right">
+      <h2><%= item.title %></h2>
+      <p><%= item.description %></p>
+
+      <div class="row g-3 mb-3">
+      <div class="col-3 col-sm-2">
+        <span id="days" class="static-value"><%= item.days %></span>
+        <label class="label-text">روز</label>
+      </div>
+      <div class="col-3 col-sm-2">
+        <span id="hours" class="static-value"><%= item.hours %></span>
+        <label class="label-text">ساعت</label>
+      </div>
+      <div class="col-3 col-sm-2">
+        <span id="minutes" class="static-value"><%= item.minutes %></span>
+        <label class="label-text">دقیقه</label>
+      </div>
+        <div class="col-3 col-sm-2">
+          <span id="seconds" class="static-value"><%= item.seconds %></span>
+          <label class="label-text">ثانیه</label>
+        </div>
+      </div>
+
+      <a
+        href="<%-item.btnURL%>"
+        class="deal-button mt-3"
+        style="text-decoration: none"
+        >معامله را بررسی کنید</a
+      >
+    </div>
+  </div>
+  <div class="d-flex justify-content-center">
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <form action="/admin/deal/adddeal" method="get">
+        <button type="submit" class="btn btn-success add-btn">ایجاد</button>
+      </form>
+      <form
+        action="/admin/deal/deletedeal"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <input type="hidden" name="id" value="<%= item._id %>" />
+        <button type="submit" class="btn btn-danger delete-btn">حذف</button>
+      </form>
+      <form action="/admin/deal/updatedeal" method="get">
+        <button type="submit" class="btn btn-primary">ویرایش</button>
+      </form>
+    </div>
+  </div>
+</div>
+<% }) %> <% } else { %>
+<div class="container mt-5">
+  <form action="/admin/deal/adddeal" method="get">
+    <button type="submit" class="custom-button">
+      <i class="bi bi-plus-circle"></i>
+    </button>
+  </form>
+</div>
+<% } %>
+
+<script>
+  document.querySelectorAll(".delete-btn").forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      Swal.fire({
+        title: "آیا مطمئن هستید؟",
+        text: "!این عمل غیر قابل بازگشت است",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3a9943",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "!بله، حذف کن",
+        cancelButtonText: "لغو",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.closest("form").submit();
+        }
+      });
+    });
+  });
+
+  document.querySelectorAll(".add-btn").forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      Swal.fire({
+        title: "آیا مطمئن هستید؟",
+        text: "!با این کار اطلاعات جدید جایگزین اطلاعات کنونی می‌شود",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3a9943",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "!بله",
+        cancelButtonText: "لغو",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.closest("form").submit();
+        }
+      });
+    });
+  });
+
+  function startCountdown() {
+    const secondsElement = document.getElementById("seconds");
+    const minutesElement = document.getElementById("minutes");
+    const hoursElement = document.getElementById("hours");
+    const daysElement = document.getElementById("days");
+
+    let seconds = parseInt(secondsElement.textContent);
+    let minutes = parseInt(minutesElement.textContent);
+    let hours = parseInt(hoursElement.textContent);
+    let days = parseInt(daysElement.textContent);
+
+    function countdown() {
+      if (seconds > 0) {
+        seconds--;
+      } else if (minutes > 0) {
+        seconds = 59;
+        minutes--;
+      } else if (hours > 0) {
+        seconds = 59;
+        minutes = 59;
+        hours--;
+      } else if (days > 0) {
+        seconds = 59;
+        minutes = 59;
+        hours = 23;
+        days--;
+      }
+
+      secondsElement.textContent = seconds;
+      minutesElement.textContent = minutes;
+      hoursElement.textContent = hours;
+      daysElement.textContent = days;
+
+      if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) {
+        setTimeout(countdown, 1000);
+      }
+    }
+
+    countdown();
+  }
+
+  window.onload = startCountdown;
+</script>

@@ -1,0 +1,101 @@
+
+<link rel="stylesheet" href="/css/custom/admin/menu.css" />
+<!-- Sidebar -->
+<button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+<div class="sidebar mb-5 minimized" id="sidebar">
+  <ul class="nav flex-column mt-3">
+    <li class="nav-item mt-5">
+      <a class="nav-link" href="/admin/dashboard" data-tooltip="خانه">
+        <span>خانه</span><i class="bi bi-house icon-size"></i>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" data-tooltip="کاربران">
+        <span>کاربران</span><i class="bi bi-people icon-size"></i>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" data-tooltip="سفارشات">
+        <span>سفارشات</span><i class="bi bi-cart icon-size"></i>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/products" data-tooltip="محصولات">
+        <span>محصولات</span><i class="bi bi-box icon-size"></i>
+      </a>
+    </li>
+    <li class="nav-item dropdown" 
+    onclick="toggleDropdown()">
+      <a
+        class="nav-link"
+        href="#"
+        id="settingsDropdown"
+        role="button"
+        data-tooltip="تنظیمات"
+      >
+        <span>تنظیمات</span>
+        <i class="bi bi-gear icon-size"></i>
+        <!-- آیکون برای باز و بسته کردن منو -->
+        <i
+          class="bi bi-chevron-down menu-toggle-icon"
+          id="toggleIcon"
+        ></i>
+      </a>
+      <ul id="settingsItems" class="dropdown-menu dropdown-menu-green">
+        <li>
+          <a class="dropdown-item" href="/admin/slider" data-tooltip="اسلایدر"
+            >اسلایدر</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="/admin/category"
+            data-tooltip="دسته بندی"
+            >دسته بندی</a
+          >
+        </li>
+        <li>
+          <a class="dropdown-item" href="/admin/deal" data-tooltip="معامله روز"
+            >معامله روز</a
+          >
+        </li>
+        <li>
+          <a
+            class="dropdown-item"
+            href="/admin/information"
+            data-tooltip="اطلاعات سایت"
+            >اطلاعات</a
+          >
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<script>
+ function toggleDropdown() {
+  const settingsItems = document.getElementById("settingsItems");
+  const toggleIcon = document.getElementById("toggleIcon");
+
+  // بررسی وضعیت باز یا بسته بودن منو و تغییر آیکون
+  settingsItems.classList.toggle("show");
+
+  if (settingsItems.classList.contains("show")) {
+    toggleIcon.classList.remove("bi-chevron-down");
+    toggleIcon.classList.add("bi-chevron-up");
+  } else {
+    toggleIcon.classList.remove("bi-chevron-up");
+    toggleIcon.classList.add("bi-chevron-down");
+  }
+}
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+
+    if (window.innerWidth <= 768) {
+      sidebar.classList.toggle("show");
+    } else {
+      sidebar.classList.toggle("minimized");
+    }
+  }
+</script>

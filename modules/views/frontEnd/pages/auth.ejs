@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="/css/custom/web/auth.css" />
+		<%- include('../partials/message') %> <%-include('../partials/errore')%>
+<div id="small-form">
+  <div class="main shadow-lg">
+    <input type="checkbox" id="chk" aria-hidden="true" />
+    <div class="signup">
+      <form method="post" action="/auth/signup">
+        <label for="chk" aria-hidden="true">ثبت نام</label>
+        <input type="text" name="firstName" placeholder="نام" required="" />
+        <input
+          type="text"
+          name="lastName"
+          placeholder="نام خانوادگی"
+          required=""
+        />
+        <input type="tel" name="phone" placeholder="09" required="" />
+        <input type="email" name="email" placeholder="ایمیل" required="" />
+        <input type="password" name="password" placeholder="رمز" required="" />
+        <input
+          type="password"
+          name="repeatPassword"
+          placeholder="تکرار رمز"
+          required=""
+        />
+        <button type="submit">ثبت نام</button>
+      </form>
+    </div>
+
+    <div class="login">
+      <form method="post" accept="/auth/login">
+        <label for="chk" aria-hidden="true">ورود</label>
+        <input type="email" name="email" placeholder="ایمیل" required="" />
+        <input type="password" name="password" placeholder="رمز" required="" />
+        <button type="submit">ورود</button>
+      </form>
+    </div>
+  </div>
+</div>

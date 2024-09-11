@@ -1,0 +1,59 @@
+
+  <div class="header-1">
+    <%if( information?.length) { %> <% information?.forEach((item, index) => {%>
+    <div class="share">
+      <span> شبکه های اجتماعی : </span>
+      <%if( item.telegram?.length) { %>
+      <a href="<%-item.telegram%>"
+        ><i class="fab fa-telegram-plane form-icon"></i
+      ></a>
+      <%} if( item.linkedin?.length) { %>
+      <a href="<%-item.linkedin%>"><i class="fab fa-linkedin form-icon"></i></a>
+      <%} if( item.instagram?.length) { %>
+      <a href="<%-item.instagram%>"
+        ><i class="fab fa-instagram form-icon"></i
+      ></a>
+      <%} if( item.twitter?.length) { %>
+      <a href="<%-item.twitter%>"><i class="fab fa-twitter form-icon"></i></a>
+      <%} if( item.facebook?.length) { %>
+      <a href="<%-item.facebook%>"
+        ><i class="fab fa-facebook-f form-icon"></i
+      ></a>
+      <%}%>
+    </div>
+    <% if( item.phone?.length) { %>
+    <div class="call">
+      <span> شماره تماس : </span>
+      <a href="#"><%-item.phone%></a>
+    </div>
+    <%}%>
+    <%})}%> 
+  </div>
+
+  <div class="header-2">
+    <a href="#" class="logo"> <i class="fas fa-seedling"></i> LOGO </a>
+
+    <form action="" class="search-bar-container">
+      <input type="search" id="search-bar" placeholder="search here..." />
+      <label for="search-bar" class="fas fa-search"></label>
+    </form>
+  </div>
+
+  <div class="header-3">
+    <div id="menu-bar" class="fas fa-bars"></div>
+
+    <nav class="navbar">
+      <a href="#home">خانه</a>
+      <a href="#category">دسته بندی</a>
+      <a href="#product">محصولات</a>
+      <a href="#deal">معامله</a>
+      <a href="#contact">تماس با ما</a>
+    </nav>
+
+    <div class="icons">
+      <a href="#" class="fas fa-shopping-cart"></a>
+      <a href="#" class="fas fa-heart"></a>
+      <a href="/auth" class="fas fa-user-circle"></a>
+    </div>
+  </div>
+

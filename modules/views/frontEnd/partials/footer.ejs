@@ -1,0 +1,41 @@
+
+<section class="footer shadow-lg border-top">
+  <%if( information?.length) { %> <% information?.forEach((item, index) => {%>
+  <div class="box-container">
+    <% if( item.about?.length) { %>
+    <div class="box text-center">
+      <h3>درباره ما</h3>
+      <p><%-item.about%></p>
+    </div>
+    <%}%>
+    <div class="box text-center">
+      <h3>دسترسی سریع</h3>
+      <a href="#">خانه</a>
+      <a href="#">دسته بندی</a>
+      <a href="#">محصولات</a>
+      <a href="#">معامله</a>
+      <a href="#">تماس با ما</a>
+    </div>
+    <div class="box text-center">
+      <h3>دنبال کردن</h3>
+      <%if( item.telegram?.length) { %>
+      <a href="<%-item.telegram%>"
+        ><i class="fab fa-telegram-plane form-icon"></i
+      ></a>
+      <%} if( item.linkedin?.length) { %>
+      <a href="<%-item.linkedin%>"><i class="fab fa-linkedin form-icon"></i></a>
+      <%} if( item.instagram?.length) { %>
+      <a href="<%-item.instagram%>"
+        ><i class="fab fa-instagram form-icon"></i
+      ></a>
+      <%} if( item.twitter?.length) { %>
+      <a href="<%-item.twitter%>"><i class="fab fa-twitter form-icon"></i></a>
+      <%} if( item.facebook?.length) { %>
+      <a href="<%-item.facebook%>"
+        ><i class="fab fa-facebook-f form-icon"></i
+      ></a>
+      <%}%>
+    </div>
+  </div>
+  <%})%> <%}%>
+</section>
