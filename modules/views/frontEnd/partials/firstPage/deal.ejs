@@ -1,7 +1,7 @@
 <!-- deal section starts  -->
 <style>
   .deal-button {
-    background-color: #3a9943; /* Green color for the button */
+    background-color: #3a9943;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -14,7 +14,7 @@
   }
 
   .deal-button:hover {
-    background-color: #2d7a35; /* Darker green on hover */
+    background-color: #2d7a35;
   }
 </style>
 <%if( deal?.length) { %>
@@ -28,19 +28,19 @@
       <p><%= item.description %></p>
       <div class="count-down">
         <div class="box">
-          <h3 id="day"><%= item.days %></h3>
+          <h3 id="days"><%= item.days %></h3>
           <span>روز</span>
         </div>
         <div class="box">
-          <h3 id="hour"><%= item.hours %></h3>
+          <h3 id="hours"><%= item.hours %></h3>
           <span>ساعت</span>
         </div>
         <div class="box">
-          <h3 id="minute"><%= item.minutes %></h3>
+          <h3 id="minutes"><%= item.minutes %></h3>
           <span>دقیقه</span>
         </div>
         <div class="box">
-          <h3 id="second"><%= item.seconds %></h3>
+          <h3 id="seconds"><%= item.seconds %></h3>
           <span>ثانیه</span>
         </div>
       </div>

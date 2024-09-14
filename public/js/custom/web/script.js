@@ -38,32 +38,45 @@ var swiper = new Swiper(".home-slider", {
     },
     loop:true,
 });
+function startCountdown() {
+    const secondsElement = document.getElementById("seconds");
+    const minutesElement = document.getElementById("minutes");
+    const hoursElement = document.getElementById("hours");
+    const daysElement = document.getElementById("days");
 
-let countDate = new Date('june 26, 2024 00:00:00').getTime();
+    let seconds = parseInt(secondsElement.textContent);
+    let minutes = parseInt(minutesElement.textContent);
+    let hours = parseInt(hoursElement.textContent);
+    let days = parseInt(daysElement.textContent);
 
-function countDown(){
+    function countdown() {
+      if (seconds > 0) {
+        seconds--;
+      } else if (minutes > 0) {
+        seconds = 59;
+        minutes--;
+      } else if (hours > 0) {
+        seconds = 59;
+        minutes = 59;
+        hours--;
+      } else if (days > 0) {
+        seconds = 59;
+        minutes = 59;
+        hours = 23;
+        days--;
+      }
 
-    let now = new Date().getTime();
+      secondsElement.textContent = seconds;
+      minutesElement.textContent = minutes;
+      hoursElement.textContent = hours;
+      daysElement.textContent = days;
 
-    gap = countDate - now;
+      if (days > 0 || hours > 0 || minutes > 0 || seconds > 0) {
+        setTimeout(countdown, 1000);
+      }
+    }
 
-    let second = 1000;
-    let minute = second * 60;
-    let hour = minute * 60;
-    let day = hour * 24;
+    countdown();
+  }
 
-    let d = Math.floor(gap / (day));
-    let h = Math.floor((gap % (day)) / (hour));
-    let m = Math.floor((gap % (hour)) / (minute));
-    let s = Math.floor((gap % (minute)) / (second));
-
-    document.getElementById('day').innerText = d;
-    document.getElementById('hour').innerText = h;
-    document.getElementById('minute').innerText = m;
-    document.getElementById('second').innerText = s;
-
-}
-
-setInterval(function(){
-    countDown();
-},1000)
+  window.onload = startCountdown;
