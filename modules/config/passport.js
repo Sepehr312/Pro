@@ -21,8 +21,12 @@ passport.use(
             message: ".نام کاربری یا کلمه عبور صحیح نیست",
           });
         }
-
-        return done(null, user);
+        const userData = {
+          id: user._id,
+          firstName: user.firstName,
+          role: user.role,
+        };
+        return done(null, userData);
       } catch (err) {
         return done(err);
       }
@@ -36,8 +40,14 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
   try {
+    
     const user = await Users.findById(id);
-    done(null, user);
+    const userData = {
+        id: user._id,
+        firstName: user.firstName,
+        role: user.role,
+      };
+    done(null, userData);
   } catch (err) {
     done(err, null);
   }

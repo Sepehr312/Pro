@@ -13,7 +13,7 @@ router.use((req, res, next) => {
     next();
   });
   
-router.use("/dashboard",home)
+router.use("/",home)
 router.use("/products",products)
 router.use("/slider",slider)
 router.use("/category",category)

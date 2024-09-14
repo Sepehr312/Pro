@@ -162,9 +162,25 @@ module.exports.loginFormValidation = async (req, res, next) => {
   }
 };
 module.exports.loginUser = (req, res, next) => {
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/auth",
-    failureFlash: true,
+  passport.authenticate("local", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.redirect('/auth');
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      if (user.role === 'admin') {
+        return res.redirect('/admin');
+      } else if (user.role === 'user') {
+        return res.redirect('/');
+      } else {
+        req.flash("errors", [{ message: "اکانتی برای این ایمیل وجود ندارد لطفا ثبت نام کنید." }]);
+        return res.redirect('/auth');
+      }
+    });
   })(req, res, next);
 }; 

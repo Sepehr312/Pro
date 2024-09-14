@@ -37,10 +37,23 @@ app.use(passport.session());
 //ROUTER
 const adminRouter = require("./modules/router/admin");
 const webRouter = require("./modules/router/web");
-const authMiddlewae = require("./modules/middlewares/auth");
-app.use("/admin", authMiddlewae.ensureAdmin, adminRouter);
+const {
+  ensureAdmin,
+  ensureAuthenticated,
+} = require("./modules/middlewares/auth");
+app.use("/admin", adminRouter);
 app.use("/", webRouter);
 
+app.use(async (req, res, next) => {
+  if (req.user) {
+    firstName = req.user.firstName;
+    authenticated = true;
+  } else {
+    firstName = "";
+    authenticated = false;
+  }
+  next();
+});
 app.listen(8800, (err) => {
   if (err) console.log(err);
   console.log("server run on port 8800");
