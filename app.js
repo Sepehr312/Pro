@@ -18,14 +18,15 @@ app.use(express.static(__dirname + "/uploads"));
 app.use(express.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname + "/modules/views"));
-app.use(expressLayout); 
+app.use(expressLayout);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: "sectretkey",
-    resave: true,
+    secret: "yourSecretKey",
+    resave: false,
     saveUninitialized: true,
+    cookie: { secure: false },
   })
 );
 app.use(flash());

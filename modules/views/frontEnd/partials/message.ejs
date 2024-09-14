@@ -1,8 +1,65 @@
 <% if (message?.length > 0) { %>
-    <div class="mt-5 alert alert-success alert-dismissible d-flex align-items-center justify-content-start" role="alert" style="direction: rtl;">
-      <span class="ms-3">  <i class="bi bi-check-circle-fill me-2"></i></span>
-      <span><%= message %></span>
-      <button type="button" class="btn-close ms-3" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  <% } %>
-  
+<div
+  class="mt-5 alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-start"
+  role="alert"
+  style="
+    direction: rtl;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  "
+>
+  <div>
+    <span class="ms-3">
+      <i
+        class="bi bi-check-circle-fill me-2"
+        style="color: #28a745; margin-left: 5px; font-size: 1.7rem"
+      ></i>
+    </span>
+    <span class="alert-text" style="font-size: 16px; font-weight: 500"
+      ><%= message %></span
+    >
+  </div>
+  <button
+    type="button"
+    class="btn-close ms-3"
+    data-bs-dismiss="alert"
+    aria-label="Close"
+    style="position: absolute; top: 10px; left: 10px"
+  ></button>
+</div>
+<% } %>
+
+<style>
+  .alert-text {
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .alert-text {
+      font-size: 14px;
+    }
+
+    .bi-check-circle-fill {
+      font-size: 1.4rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const closeButtons = document.querySelectorAll(".btn-close");
+
+    closeButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        const alert = button.closest(".alert");
+        if (alert) {
+          alert.classList.add("fade");
+          setTimeout(() => {
+            alert.remove();
+          }, 500);
+        }
+      });
+    });
+  });
+</script>

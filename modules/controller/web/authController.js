@@ -1,4 +1,5 @@
 const joi = require("joi");
+const bcrypt = require("bcryptjs");
 const Slide = require("../../models/slide");
 const Category = require("../../models/category");
 const Deal = require("../../models/deal");
@@ -11,6 +12,10 @@ module.exports.getAuthForm = async (req, res) => {
     const category = await Category.find();
     const deal = await Deal.find();
     const information = await Information.find();
+    let fieldDatas = req.flash("fieldData");
+    if (fieldDatas && fieldDatas.length) {
+      fieldDatas = fieldDatas[0];
+    }
 
     res.render("frontEnd/pages/auth", {
       message: req.flash("message"),
@@ -19,6 +24,7 @@ module.exports.getAuthForm = async (req, res) => {
       category,
       deal,
       information,
+      auth: fieldDatas,
     });
   } catch (err) {
     console.log(err);
@@ -85,20 +91,65 @@ module.exports.registrationFormValidation = async (req, res, next) => {
 };
 module.exports.sortUserData = async (req, res, next) => {
   try {
-    console.log(req.body);
-
+    const password = await bcrypt.hash(req.body.password, 10);
     const newUsers = new Users({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       phone: req.body.phone,
       email: req.body.email,
-      password: req.body.password,
+      password: password,
     });
-    await newUsers.save();
 
-    req.flash("message", "ثبت نام با موفقیت انجام شد");
-    res.redirect("/auth");
+    await newUsers
+      .save()
+      .then(() => {
+        req.flash("message", "ثبت نام با موفقیت انجام شد");
+        return res.redirect("/auth");
+      })
+      .catch((err) => {
+        if (err.code === 11000) {
+          const errors = [];
+          if (err.keyValue.phone) {
+            errors.push({ message: "شماره تلفن وارد شده قبلاً ثبت شده است." });
+          }
+          if (err.keyValue.email) {
+            errors.push({ message: "ایمیل وارد شده قبلاً ثبت شده است." });
+          }
+          req.flash("errors", errors);
+          req.flash("fieldData", req.body);
+          return res.redirect("/auth");
+        }
+        req.flash("errors", [
+          { message: "خطایی رخ داد، لطفاً مجدداً تلاش کنید." },
+        ]);
+        return res.redirect("/auth");
+      });
   } catch (err) {
     console.log(err);
+  }
+};
+module.exports.startLogin = async () => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await Users.findOne({ email });
+    if (!user) {
+      req.flash("errors", [{ message: "کاربری با این ایمیل یافت نشد." }]);
+      return res.redirect("/auth");
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      req.flash("errors", [{ message: "رمز عبور اشتباه است." }]);
+      return res.redirect("/auth");
+    }
+
+    req.flash("message", "ورود با موفقیت انجام شد.");
+    req.session.user = user;
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+    req.flash("errors", [{ message: "خطایی رخ داد، لطفاً مجدداً تلاش کنید." }]);
+    res.redirect("/auth");
   }
 };

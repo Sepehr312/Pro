@@ -9,9 +9,6 @@ router.post(
   authController.registrationFormValidation,
   authController.sortUserData
 );
-router.post(
-    "/login",
-    authController.sortUserData
-  );
+router.post("/login", authController.startLogin);
 
 module.exports = router;
