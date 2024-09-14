@@ -4,6 +4,28 @@
   <div class="main shadow-lg">
     <input type="checkbox" id="chk" aria-hidden="true" />
     <div class="signup">
+      <form method="post" action="/auth/login">
+        <label for="chk" aria-hidden="true">ورود</label>
+        <div class="text-center">
+          <input
+            type="email"
+            name="email"
+            placeholder="ایمیل"
+            value="<%-auth?.email %>"
+            required=""
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="رمز"
+            required=""
+            value="09922797990"
+          />
+          <button type="submit">ورود</button>
+        </div>
+      </form>
+    </div>
+    <div class="login">
       <form method="post" action="/auth/signup">
         <label for="chk" aria-hidden="true">ثبت نام</label>
         <div class="row">
@@ -58,27 +80,5 @@
       </form>
     </div>
 
-    <div class="login">
-      <form method="post" action="/auth/login">
-        <label for="chk" aria-hidden="true">ورود</label>
-        <div class="text-center">
-          <input
-            type="email"
-            name="email"
-            placeholder="ایمیل"
-            value="<%-auth?.email %>"
-            required=""
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="رمز"
-            required=""
-            value="09922797990"
-          />
-          <button type="submit">ورود</button>
-        </div>
-      </form>
-    </div>
   </div>
 </div>
