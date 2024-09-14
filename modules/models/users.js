@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   phone: { type: String, required: true, unique: true, match: /^09[0-9]{9}$/ },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  role: { type: String, enum: ["admin", "user"], default: "user" }, 
 });
 
 userSchema.plugin(timestamps);

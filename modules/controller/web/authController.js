@@ -1,5 +1,6 @@
 const joi = require("joi");
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
 const Slide = require("../../models/slide");
 const Category = require("../../models/category");
 const Deal = require("../../models/deal");
@@ -98,6 +99,7 @@ module.exports.sortUserData = async (req, res, next) => {
       phone: req.body.phone,
       email: req.body.email,
       password: password,
+      role: "user",
     });
 
     await newUsers
@@ -128,28 +130,41 @@ module.exports.sortUserData = async (req, res, next) => {
     console.log(err);
   }
 };
-module.exports.startLogin = async () => {
-  const { email, password } = req.body;
 
+//LOGIN
+module.exports.loginFormValidation = async (req, res, next) => {
   try {
-    const user = await Users.findOne({ email });
-    if (!user) {
-      req.flash("errors", [{ message: "کاربری با این ایمیل یافت نشد." }]);
-      return res.redirect("/auth");
-    }
+    const schema = joi.object({
+      email: joi.string().email().required().messages({
+        "string.empty": "فیلد ایمیل الزامی است.",
+        "string.email": "آدرس ایمیل نامعتبر است.",
+        "any.required": "وارد کردن ایمیل اجباری است.",
+      }),
+      password: joi.string().min(6).required().messages({
+        "string.empty": "فیلد رمز عبور الزامی است.",
+        "string.min": "رمز عبور حداقل باید 6 کاراکتر داشته باشد.",
+        "any.required": "وارد کردن رمز عبور اجباری است.",
+      }),
+    });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      req.flash("errors", [{ message: "رمز عبور اشتباه است." }]);
-      return res.redirect("/auth");
-    }
+    const result = await schema.validate(req.body, { abortEarly: false });
+    const errors = result.error?.details;
 
-    req.flash("message", "ورود با موفقیت انجام شد.");
-    req.session.user = user;
-    res.redirect("/");
+    if (result.error) {
+      req.flash("errors", errors);
+      req.flash("fieldData", req.body);
+      return res.redirect("/auth");
+    } else {
+      next();
+    }
   } catch (err) {
     console.log(err);
-    req.flash("errors", [{ message: "خطایی رخ داد، لطفاً مجدداً تلاش کنید." }]);
-    res.redirect("/auth");
   }
 };
+module.exports.loginUser = (req, res, next) => {
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/auth",
+    failureFlash: true,
+  })(req, res, next);
+}; 

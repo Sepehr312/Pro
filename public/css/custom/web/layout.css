@@ -1,5 +1,9 @@
-
-@import url('https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font/dist/font-face.css');
+@font-face {
+  font-family: 'BYekan';
+  src: url('/font/BYekan.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 :root {
   --green: #3a9943;

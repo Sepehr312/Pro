@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const path = require("path");
 const passport = require("passport");
+require("./modules/config/passport");
+const MongoStore = require("connect-mongo");
 
 const app = express();
 
@@ -21,22 +23,22 @@ app.set("views", path.join(__dirname + "/modules/views"));
 app.use(expressLayout);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(flash());
 app.use(
   session({
-    secret: "yourSecretKey",
+    secret: "secret",
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
+    saveUninitialized: false,
   })
 );
-app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
 //ROUTER
 const adminRouter = require("./modules/router/admin");
 const webRouter = require("./modules/router/web");
-app.use("/admin", adminRouter);
+const authMiddlewae = require("./modules/middlewares/auth");
+app.use("/admin", authMiddlewae.ensureAdmin, adminRouter);
 app.use("/", webRouter);
 
 app.listen(8800, (err) => {
