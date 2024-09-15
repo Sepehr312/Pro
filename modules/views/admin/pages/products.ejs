@@ -1,3 +1,106 @@
 
-    <h1>محصولات</h1>
-    <p>محتوای صفحه محصولات</p>
+<style>
+    body {
+      font-family: 'IRANSans', Arial, sans-serif;
+      background-color: #f1f1f1;
+    }
+    .product-card {
+      border: none;
+      transition: transform 0.3s, box-shadow 0.3s;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background: rgba(255, 255, 255, 0.9); /* پس زمینه شفاف */
+    }
+    .product-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .card-img-top {
+      height: 250px;
+      object-fit: cover;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    .card-title {
+      font-size: 1.2rem;
+      color: #3a9943;
+      background: rgba(255, 255, 255, 0.7); /* پس زمینه شفاف */
+      padding: 5px;
+      border-radius: 10px;
+    }
+    .price {
+      font-size: 1rem;
+      color: #ff6347;
+      background: rgba(255, 255, 255, 0.7); /* پس زمینه شفاف */
+      padding: 5px;
+      border-radius: 10px;
+    }
+    .btn-custom {
+      background-color: #3a9943;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .btn-custom:hover {
+      background-color: #2f7a37;
+      transform: translateY(-3px);
+    }
+    .btn-delete {
+      background-color: #ff6347;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .btn-delete:hover {
+      background-color: #e53e30;
+      transform: translateY(-3px);
+    }
+    .add-products-btn {
+      background-color: #3a9943;
+      color: #fff;
+      font-size: 1.2rem;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 30px;
+      transition: background-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .add-products-btn:hover {
+      background-color: #2f7a37;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    h1 {
+      font-size: 2rem;
+      color: #3a9943;
+      margin-bottom: 40px;
+      font-weight: bold;
+    }
+  </style>
+
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <button class="btn add-products-btn">افزودن محصولات</button>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card product-card">
+          <img src="https://via.placeholder.com/300x250" class="card-img-top" alt="محصول گل">
+          <div class="card-body text-center">
+            <h5 class="card-title">دسته گل رز</h5>
+            <p class="price">200,000 تومان</p>
+            <div class="d-flex justify-content-center gap-2">
+              <a href="#" class="btn btn-custom">ویرایش</a>
+              <a href="#" class="btn btn-delete">حذف</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+

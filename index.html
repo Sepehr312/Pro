@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فرم ساخت محصول</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'IRANSans', Arial, sans-serif;
+      background-color: #f9f9f9;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px;
+      background-color: white;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .large-preview-container {
+      width: 450px;
+      height: 450px;
+      border: 2px solid #3a9943;
+      border-radius: 15px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f1f1f1;
+      margin-bottom: 20px;
+    }
+
+    .large-preview-container img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 15px;
+    }
+
+    .slider-container {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .small-upload-container {
+      width: 75px;
+      height: 75px;
+      border: 2px dashed #3a9943;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      background-color: #f1f1f1;
+      margin-right: 20px;
+      position: relative;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .small-upload-container img {
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 10px;
+    }
+
+    .small-upload-container:hover {
+      background-color: #e3f2e1;
+      border-color: #2f7a37;
+    }
+
+    .selected-container {
+      border-color: #2f7a37 !important;
+      box-shadow: 0 0 0 4px rgba(47, 122, 55, 0.3);
+    }
+
+    .icon-placeholder {
+      font-size: 2rem;
+      color: #3a9943;
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .add-upload-container {
+      width: 75px;
+      height: 75px;
+      border: 2px dashed #3a9943;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      background-color: #f1f1f1;
+      transition: background-color 0.3s, border-color 0.3s;
+      margin-right: 20px;
+    }
+
+    .add-upload-container:hover {
+      background-color: #e3f2e1;
+      border-color: #2f7a37;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transform: translate(25%, -25%);
+    }
+
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+
+    @media (max-width: 992px) {
+      .form-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+      .slider-container,
+      .form-fields {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-wrapper">
+  <!-- کادر بزرگ برای نمایش تصویر -->
+  <div class="large-preview-container">
+    <img id="largePreviewImage" src="#" alt="تصویر بزرگ" style="display:none;">
+  </div>
+
+  <!-- بخش اسلایدر آپلود عکس های کوچک -->
+  <div class="slider-container" id="sliderContainer">
+    <div class="small-upload-container" id="uploadContainer1">
+      <button type="button" class="delete-btn" data-id="uploadContainer1">
+        <i class="bi bi-x"></i>
+      </button>
+      <i class="bi bi-cloud-arrow-up icon-placeholder"></i>
+      <img id="previewImage1" style="display:none;" alt="تصویر محصول کوچک">
+    </div>
+    
+    <!-- دکمه افزودن شبیه کادرهای آپلود -->
+    <div class="add-upload-container" id="addUploadBtn">
+      <i class="bi bi-plus icon-placeholder"></i>
+    </div>
+  </div>
+  
+</div>
+
+<script>
+  let uploadCount = 1;
+
+  const addUploadBtn = document.getElementById('addUploadBtn');
+  const sliderContainer = document.getElementById('sliderContainer');
+  const largePreviewImage = document.getElementById('largePreviewImage');
+
+  addUploadBtn.addEventListener('click', () => {
+    uploadCount++;
+    const newUploadContainer = document.createElement('div');
+    newUploadContainer.classList.add('small-upload-container');
+    newUploadContainer.innerHTML = `<button type="button" class="delete-btn" data-id="uploadContainer${uploadCount}">
+                                      <i class="bi bi-x"></i>
+                                    </button>
+                                    <i class="bi bi-cloud-arrow-up icon-placeholder"></i>
+                                    <img id="previewImage${uploadCount}" style="display:none;" alt="تصویر محصول کوچک">`;
+    sliderContainer.insertBefore(newUploadContainer, addUploadBtn);
+
+    const newFileInput = document.createElement('input');
+    newFileInput.type = 'file';
+    newFileInput.accept = 'image/*';
+    newFileInput.classList.add('hidden-input');
+    document.body.appendChild(newFileInput);
+
+    newUploadContainer.addEventListener('click', () => {
+      document.querySelectorAll('.small-upload-container').forEach(container => {
+        container.classList.remove('selected-container');
+      });
+      newUploadContainer.classList.add('selected-container');
+      
+      if (!newUploadContainer.classList.contains('uploaded')) {
+        newFileInput.click();
+      } else {
+        // نمایش تصویر بزرگ بدون آپلود مجدد
+        const imgSrc = newUploadContainer.querySelector('img').src;
+        largePreviewImage.src = imgSrc;
+        largePreviewImage.style.display = 'block';
+      }
+    });
+
+    newFileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = newUploadContainer.querySelector('img');
+          img.src = e.target.result;
+          img.style.display = 'block';
+          newUploadContainer.querySelector('.icon-placeholder').style.display = 'none';
+
+          // نمایش تصویر بزرگ
+          largePreviewImage.src = e.target.result;
+          largePreviewImage.style.display = 'block';
+
+          // نشانه گذاری به عنوان آپلود شده
+          newUploadContainer.classList.add('uploaded');
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // حذف کادر آپلود
+    const deleteBtn = newUploadContainer.querySelector('.delete-btn');
+    deleteBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // جلوگیری از اجرای رویداد کلیک روی کادر آپلود
+      newUploadContainer.remove();
+      // اگر آخرین کادر آپلود حذف شد، تصویر بزرگ نیز پنهان شود
+      if (!sliderContainer.querySelector('.small-upload-container')) {
+        largePreviewImage.style.display = 'none';
+      }
+    });
+  });
+
+  // برای اولین کادر آپلود
+  const firstUploadContainer = document.getElementById('uploadContainer1');
+  const fileInput1 = document.createElement('input');
+  fileInput1.type = 'file';
+  fileInput1.accept = 'image/*';
+  fileInput1.classList.add('hidden-input');
+  document.body.appendChild(fileInput1);
+
+  firstUploadContainer.addEventListener('click', () => {
+    document.querySelectorAll('.small-upload-container').forEach(container => {
+      container.classList.remove('selected-container');
+    });
+    firstUploadContainer.classList.add('selected-container');
+    
+    if (!firstUploadContainer.classList.contains('uploaded')) {
+      fileInput1.click();
+    } else {
+      // نمایش تصویر بزرگ بدون آپلود مجدد
+      const imgSrc = firstUploadContainer.querySelector('img').src;
+      largePreviewImage.src = imgSrc;
+      largePreviewImage.style.display = 'block';
+    }
+  });
+
+  fileInput1.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = firstUploadContainer.querySelector('img');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        firstUploadContainer.querySelector('.icon-placeholder').style.display = 'none';
+
+        // نمایش تصویر بزرگ
+        largePreviewImage.src = e.target.result;
+        largePreviewImage.style.display = 'block';
+
+        // نشانه گذاری به عنوان آپلود شده
+        firstUploadContainer.classList.add('uploaded');
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // حذف کادر آپلود اول
+  const deleteBtn1 = firstUploadContainer.querySelector('.delete-btn');
+  deleteBtn1.addEventListener('click', (e) => {
+    e.stopPropagation();
+    firstUploadContainer.remove();
+    largePreviewImage.style.display = 'none';
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
