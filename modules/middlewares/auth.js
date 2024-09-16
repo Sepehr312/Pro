@@ -7,7 +7,6 @@ module.exports.ensureAuthenticated = (req, res, next) => {
 };
 
 module.exports.ensureAdmin = (req, res, next) => {
-  console.log("ensureAdmin", req.user);
   if (req.user?.role === "admin") {
     return next();
   }

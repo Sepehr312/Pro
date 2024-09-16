@@ -13,6 +13,17 @@ function makeid(length) {
   }
   return result;
 }
+const productsImageStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    let dir = path.join(__dirname, "../../uploads/products");
+    mkdirp.sync(dir);
+    cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+    let extension = path.extname(file.originalname);
+    cb(null, Date.now() + makeid(30) + extension.toLowerCase());
+  },
+});
 
 const slideImageStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -50,6 +61,9 @@ const dealImageStorage = multer.diskStorage({
   },
 });
 
+const uploadProductsImage = multer({
+  storage: productsImageStorage,
+});
 const uploadSlideImage = multer({
   storage: slideImageStorage,
 });
@@ -62,6 +76,7 @@ const uploadDealImage = multer({
 
 //EXPORT
 module.exports = {
+  uploadProductsImage,
   uploadSlideImage,
   uploadCategotyImage,
   uploadDealImage,
