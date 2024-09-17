@@ -19,22 +19,7 @@ const productSchema = new schema({
     type: String,
     required: true,
   },
-  images: [
-    {
-      filename: {
-        type: String,
-        required: true,
-      },
-      filePath: {
-        type: String,
-        required: true,
-      },
-      fileSize: {
-        type: Number,
-        required: false,
-      },
-    },
-  ],
+  images: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Image' }],
 });
 productSchema.plugin(timestamps);
 

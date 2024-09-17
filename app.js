@@ -33,14 +33,10 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(express.json());
 //ROUTER
 const adminRouter = require("./modules/router/admin");
 const webRouter = require("./modules/router/web");
-const {
-  ensureAdmin,
-  ensureAuthenticated,
-} = require("./modules/middlewares/auth");
 app.use("/admin", adminRouter);
 app.use("/", webRouter);
 

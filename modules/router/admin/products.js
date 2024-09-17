@@ -31,5 +31,17 @@ router.post(
   uploadProductsImage.any(),
   productsController.deleteFile
 );
-
+router.post(
+  "/addedproducts",
+  ensureAuthenticated,
+  ensureAdmin,
+  productsController.addedproducts
+);
+router.post(
+  "/deleteproducts",
+  ensureAuthenticated,
+  ensureAdmin,
+  productsController.deleteproducts
+);
+ 
 module.exports = router;

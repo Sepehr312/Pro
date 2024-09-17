@@ -1,106 +1,260 @@
-
 <style>
-    body {
-      font-family: 'IRANSans', Arial, sans-serif;
-      background-color: #f1f1f1;
-    }
-    .product-card {
-      border: none;
-      transition: transform 0.3s, box-shadow 0.3s;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      background: rgba(255, 255, 255, 0.9); /* پس زمینه شفاف */
-    }
-    .product-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-    .card-img-top {
-      height: 250px;
-      object-fit: cover;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    .card-title {
-      font-size: 1.2rem;
-      color: #3a9943;
-      background: rgba(255, 255, 255, 0.7); /* پس زمینه شفاف */
-      padding: 5px;
-      border-radius: 10px;
-    }
-    .price {
-      font-size: 1rem;
-      color: #ff6347;
-      background: rgba(255, 255, 255, 0.7); /* پس زمینه شفاف */
-      padding: 5px;
-      border-radius: 10px;
-    }
-    .btn-custom {
-      background-color: #3a9943;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 20px;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-    .btn-custom:hover {
-      background-color: #2f7a37;
-      transform: translateY(-3px);
-    }
-    .btn-delete {
-      background-color: #ff6347;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 20px;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-    .btn-delete:hover {
-      background-color: #e53e30;
-      transform: translateY(-3px);
-    }
-    .add-products-btn {
-      background-color: #3a9943;
-      color: #fff;
-      font-size: 1.2rem;
-      border: none;
-      padding: 12px 30px;
-      border-radius: 30px;
-      transition: background-color 0.3s, box-shadow 0.3s;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .add-products-btn:hover {
-      background-color: #2f7a37;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
-    h1 {
-      font-size: 2rem;
-      color: #3a9943;
-      margin-bottom: 40px;
-      font-weight: bold;
-    }
-  </style>
+  body {
+    background-color: #f1f1f1;
+    direction: rtl;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin: 2rem auto;
+    max-width: 1200px;
+  }
+  .categories-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  .form-select,
+  .search-input {
+    width: 25%;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    padding-right: 45px;
+  }
+  .search-input {
+    flex-grow: 1;
+    width: 70%;
+  }
+  .search-input:focus {
+    border-color: #3a9943;
+    box-shadow: 0 0 0 0.2rem rgba(58, 153, 67, 0.25);
+  }
+  .add-products-btn {
+    background-color: #3a9943;
+    color: #fff;
+    font-size: 1.2rem;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+  }
+  .add-products-btn:hover {
+    background-color: #2f7a37;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  .table-container {
+    margin-top: 1.5rem;
+  }
+  .description-cell {
+    max-height: 75px;
+    overflow-y: auto;
+    width: 350px;
+    white-space: normal;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th,
+  td {
+    padding: 1rem;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+  th {
+    background-color: #f8f9fa;
+  }
+  tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
 
-  <div class="container py-5">
-    <div class="text-center mb-5">
-      <a class="btn add-products-btn" href="/admin/products/addproducts">افزودن محصولات</a>
-    </div>
+<div class="container">
+  <div class="text-center mb-5">
+    <a class="btn add-products-btn" href="/admin/products/addproducts">
+      <i class="bi bi-plus-lg"></i> افزودن محصولات
+    </a>
+  </div>
+  <div class="categories-container">
+    <select
+      id="productCategory"
+      name="productCategory"
+      class="form-select"
+      onchange="filterByCategory()"
+    >
+      <option value="">همه دسته‌بندی‌ها</option>
+      <% categories?.forEach((category) => { %>
+      <option value="<%= category.title %>"><%= category.title %></option>
+      <% }) %>
+    </select>
 
-    <div class="row">
-      <div class="col-md-4 mb-4">
-        <div class="card product-card">
-          <img src="https://via.placeholder.com/250x250" class="card-img-top" alt="محصول گل">
-          <div class="card-body text-center">
-            <h5 class="card-title">دسته گل رز</h5>
-            <p class="price">200,000 تومان</p>
-            <div class="d-flex justify-content-center gap-2">
-              <a href="#" class="btn btn-custom">ویرایش</a>
-              <a href="#" class="btn btn-delete">حذف</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <input
+      type="search"
+      id="searchInput"
+      class="search-input"
+      placeholder="جستجوی محصول..."
+      onkeyup="filterTable()"
+    />
   </div>
 
+  <div class="table-container">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover text-center">
+        <thead>
+          <tr>
+            <th style="width: 20px">ردیف</th>
+            <th>عکس</th>
+            <th>عنوان</th>
+            <th class="description-cell">توضیحات</th>
+            <th>قیمت</th>
+            <th>ویرایش</th>
+            <th>حذف</th>
+          </tr>
+        </thead>
+        <tbody id="tableContent">
+          <% if (product.length === 0) { %>
+          <tr>
+            <td colspan="7">محصولی موجود نیست</td>
+          </tr>
+          <% } else { %> <% product.forEach((item, index) => { %>
+          <tr>
+            <td class="align-middle"><%= index + 1 %></td>
+            <td class="align-middle">
+              <% if (item.images && item.images.length > 0) { %>
+              <img
+                src="/products/<%= item.images[0].filename %>"
+                alt="Image of <%= item.name %>"
+                class="img-thumbnail"
+                style="width: 75px"
+              />
+              <% } %>
+            </td>
+            <td class="align-middle"><%= item.name %></td>
+            <td class="align-middle">
+              <div class="description-cell"><%= item.description %></div>
+            </td>
+            <td class="align-middle"><%= item.price %> تومان</td>
+            <td class="align-middle">
+              <form action="/admin/products/updateproducts" method="get">
+                <input type="hidden" name="_id" value="<%= item._id %>" />
+                <button type="submit" class="btn btn-outline-success">
+                  ویرایش
+                </button>
+              </form>
+            </td>
+            <td class="align-middle">
+              <button
+                type="submit"
+                id="delete-btn"
+                class="btn btn-outline-danger"
+                onclick="click_dlete('<%= item._id %>')"
+              >
+                حذف
+              </button>
+            </td>
+          </tr>
+          <% }) %> <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // این تابع برای فیلتر کردن بر اساس دسته‌بندی و جستجو
+  function filterByCategory() {
+    const selectedCategory = document.getElementById("productCategory").value;
+    const searchInput = document.getElementById("searchInput").value;
+
+    let url = new URL(window.location.href);
+    url.searchParams.set("category", selectedCategory);
+    url.searchParams.set("search", searchInput);
+
+    window.location.href = url;
+  }
+
+  // این تابع برای فیلتر کردن جدول با استفاده از جستجو
+  function filterTable() {
+    const searchInput = document
+      .getElementById("searchInput")
+      .value.toLowerCase();
+    const rows = document.querySelectorAll("#tableContent tr");
+
+    rows.forEach((row) => {
+      const cells = row.querySelectorAll("td");
+      let match = false;
+      cells.forEach((cell) => {
+        if (cell.textContent.toLowerCase().includes(searchInput)) {
+          match = true;
+        }
+      });
+      row.style.display = match ? "" : "none";
+    });
+  }
+
+  function click_dlete(id) {
+    const deleteProductID=id;
+    Swal.fire({
+      title: "آیا مطمئن هستید؟",
+      text: "این عملیات قابل بازگشت نیست!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "بله، حذف کن!",
+      cancelButtonText: "انصراف",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log(deleteProductID)
+        fetch("/admin/products/deleteproducts", {
+          method: "POST",
+          body: deleteProductID,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              Swal.fire({
+                title: "موفق!",
+                text: data.message,
+                icon: "success",
+                confirmButtonColor: "#3a9943",
+              }).then(() => {
+                window.location.reload();
+              });
+            } else {
+              Swal.fire({
+                title: "خطا!",
+                text: data.message,
+                icon: "error",
+                confirmButtonColor: "#d33",
+              });
+            }
+          })
+          .catch((error) => {
+            Swal.fire({
+              title: "خطا!",
+              text: "خطایی در ارسال درخواست رخ داده است.",
+              icon: "error",
+              confirmButtonColor: "#d33",
+            });
+          });
+      }
+    });
+  }
+</script>
