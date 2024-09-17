@@ -51,8 +51,9 @@
         <label for="productCategory">دسته بندی محصول:</label>
         <select id="productCategory" class="form-select">
           <option value="">انتخاب دسته بندی</option>
-          <option value="category1">دسته ۱</option>
-          <option value="category2">دسته ۲</option>
+          <% category?.forEach((item) => { %>
+          <option value="<%-item.title%>"><%-item.title%></option>
+          <%})%>
         </select>
       </div>
     </div>
