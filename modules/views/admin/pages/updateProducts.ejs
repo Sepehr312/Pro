@@ -1,0 +1,343 @@
+<link rel="stylesheet" href="/css/custom/admin/product.css" />
+<div class="wrapper">
+  <div class="form-wrapper">
+    <div class="form-section-right">
+      <!-- Image Upload and Product Info -->
+      <div class="large-preview-container">
+        <img
+          id="largePreviewImage"
+          src="#"
+          alt="تصویر بزرگ"
+          style="display: none"
+        />
+      </div>
+      <div class="slider-container" id="sliderContainer">
+        <div class="add-upload-container" id="addUploadBtn">
+          <i class="bi bi-plus-lg" style="font-size: 32px; color: #3a9943"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section-left">
+      <!-- Price and Category -->
+      <div class="form-group">
+        <label for="productName">نام محصول:</label>
+        <input
+          type="text"
+          id="productName"
+          name="productName"
+          class="form-control"
+          value="<%-product?.name%>"
+          placeholder="نام محصول را وارد کنید"
+        />
+      </div>
+      <div class="form-group">
+        <label for="productDescription">توضیحات محصول:</label>
+        <textarea
+          id="productDescription"
+          name="productDescription"
+          class="form-control"
+          placeholder="توضیحات محصول را وارد کنید"
+          rows="5"
+        >
+<%-product?.description%></textarea
+        >
+      </div>
+      <div class="form-group">
+        <label for="productPrice">قیمت محصول:</label>
+        <input
+          type="number"
+          id="productPrice"
+          name="productPrice"
+          class="form-control"
+          value="<%-product?.price%>"
+          placeholder="قیمت محصول را وارد کنید"
+        />
+      </div>
+      <div class="form-group">
+        <label for="productCategory">دسته بندی محصول:</label>
+        <select id="productCategory" name="productCategory" class="form-select">
+          <option value="">انتخاب دسته بندی</option>
+          <% category?.forEach((item) => { %>
+          <option value="<%-item.title%>"><%-item.title%></option>
+          <% }) %>
+        </select>
+      </div>
+    </div>
+  </div><%= product?._id %>
+  <input type="hidden" id="productId" value="<%= product?._id %>">
+  <div class="d-grid gap-2">
+    <button class="btn btn-success" type="button" id="update-btn">
+      ثبت محصول
+    </button>
+  </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const productImages = <%- JSON.stringify(product?.images) %>;
+  const sliderContainer = document.getElementById("sliderContainer");
+  const addUploadBtn = document.getElementById("addUploadBtn");
+  const largePreviewImage = document.getElementById("largePreviewImage");
+  const placeholderImage = "https://via.placeholder.com/250x250";
+  let currentImageSrc = null;
+  const uploadedImages = [];
+
+  // پیش‌نمایش تصویر بزرگ
+  function updateLargePreview(src) {
+    if (src) {
+      largePreviewImage.src = src;
+      largePreviewImage.style.display = "block";
+      currentImageSrc = src;
+    } else {
+      largePreviewImage.src = placeholderImage;
+      largePreviewImage.style.display = "block";
+      currentImageSrc = null;
+    }
+  }
+
+  // حذف تصویر از سرور
+  function deleteImage(filename) {
+    return fetch("/admin/products/deleteproductsimage", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ filePath: filename }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === "فایل با موفقیت حذف شد!") {
+          Swal.fire({
+            icon: "success",
+            title: "تصویر با موفقیت حذف شد",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          throw new Error(data.message || "Error deleting image");
+        }
+      })
+      .catch((error) => {
+        console.error("خطا در حذف تصویر:", error.message);
+        Swal.fire({
+          icon: "error",
+          title: "خطا",
+          text: error.message || "مشکلی در حذف تصویر رخ داد.",
+        });
+      });
+  }
+
+  // مدیریت دکمه حذف تصویر
+  function handleDelete(button, filename, parentContainer) {
+    button.addEventListener("click", function (event) {
+      event.stopPropagation();
+      deleteImage(filename).then(() => {
+        const imageSrc = parentContainer.querySelector("img").src;
+        const index = uploadedImages.findIndex((img) => img === filename);
+        if (index > -1) {
+          uploadedImages.splice(index, 1);
+        }
+        parentContainer.remove();
+        // حذف عکس از دیتابیس
+        fetch(`/admin/products/deleteProductImageFromDb/${filename}`, {
+          method: "POST",
+        });
+
+        // بررسی و به‌روزرسانی پیش‌نمایش
+        if (currentImageSrc === imageSrc) {
+          const remainingImages = sliderContainer.querySelectorAll(
+            ".small-upload-container img"
+          );
+          if (remainingImages.length > 0) {
+            updateLargePreview(remainingImages[0].src);
+          } else {
+            updateLargePreview(null);
+          }
+        }
+      });
+    });
+  }
+
+  // آپلود تصویر جدید
+  function uploadImage(file) {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    return fetch("/admin/products/uploderproductsimage", {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "تصویر با موفقیت آپلود شد",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          uploadedImages.push(data.data);
+          return data.data;
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "خطا در آپلود تصویر",
+            text: "لطفاً مجدداً تلاش کنید!",
+          });
+          throw new Error("Error uploading image");
+        }
+      })
+      .catch((error) => {
+        console.error("خطا در آپلود تصویر:", error);
+        Swal.fire({
+          icon: "error",
+          title: "خطا",
+          text: "مشکلی در آپلود تصویر رخ داد.",
+        });
+      });
+  }
+
+  // اضافه کردن تصاویر آپلود شده
+  addUploadBtn.addEventListener("click", function () {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+
+    fileInput.addEventListener("change", function () {
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+
+        uploadImage(file).then((filename) => {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const newUploadContainer = document.createElement("div");
+            newUploadContainer.classList.add("small-upload-container");
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            newUploadContainer.appendChild(img);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.classList.add("delete-btn");
+            deleteBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+            handleDelete(deleteBtn, filename, newUploadContainer);
+            newUploadContainer.appendChild(deleteBtn);
+
+            newUploadContainer.addEventListener("click", function () {
+              updateLargePreview(e.target.result);
+            });
+
+            sliderContainer.insertBefore(newUploadContainer, addUploadBtn);
+            updateLargePreview(e.target.result);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+    });
+
+    fileInput.click();
+  });
+
+  // افزودن تصاویر اولیه محصول
+  if (productImages && productImages.length > 0) {
+    productImages.forEach((element) => {
+      const newUploadContainer = document.createElement("div");
+      newUploadContainer.classList.add("small-upload-container");
+
+      const img = document.createElement("img");
+      img.src = `http://localhost:8800/products/${element.filename}`;
+      newUploadContainer.appendChild(img);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.classList.add("delete-btn");
+      deleteBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+      handleDelete(deleteBtn, element.filename, newUploadContainer);
+      newUploadContainer.appendChild(deleteBtn);
+
+      newUploadContainer.addEventListener("click", function () {
+        updateLargePreview(img.src);
+      });
+
+      sliderContainer.insertBefore(newUploadContainer, addUploadBtn);
+    });
+  }
+
+  // پیش‌نمایش اولیه تصویر
+  updateLargePreview(null);
+
+  // بخش مربوط به بروزرسانی محصول
+  const productIdInput = document.getElementById("productId");
+  if (!productIdInput) {
+    console.error("Element with id 'productId' not found.");
+    return;
+  }
+
+  document.getElementById("update-btn").addEventListener("click", function () {
+    console.log("دکمه به درستی کار می‌کند");
+    const productId = productIdInput.value; // استفاده صحیح از productId
+    const productName = document.getElementById("productName").value;
+    const productDescription = document.getElementById("productDescription").value;
+    const productPrice = document.getElementById("productPrice").value;
+    const productCategory = document.getElementById("productCategory").value;
+
+    // اعتبارسنجی داده‌های فرم
+    if (!productName || !productDescription || !productPrice || !productCategory || !productId) {
+      Swal.fire({
+        icon: "warning",
+        title: "لطفاً تمام فیلدها را پر کنید.",
+        showConfirmButton: true,
+      });
+      return;
+    }
+
+    // آماده‌سازی داده‌های محصول برای ارسال به سرور
+    const productData = {
+      productId, // اینجا باید productId به عنوان بخشی از درخواست باشد
+      name: productName,
+      description: productDescription,
+      price: productPrice,
+      category: productCategory,
+      images: uploadedImages, // آرایه نام تصاویر آپلود شده
+    };
+
+    // ارسال درخواست به سرور
+    fetch("/admin/products/updatedProduct", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(productData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.success) {
+          // نمایش خطاها
+          Swal.fire({
+            icon: "error",
+            title: "خطا",
+            text: "مشکلی در ثبت محصول رخ داد.",
+          });
+        } else {
+          // موفقیت در ثبت محصول
+          Swal.fire({
+            icon: "success",
+            title: "محصول با موفقیت به‌روزرسانی شد",
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(() => {
+            window.location.reload();
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("خطا در ثبت محصول:", error);
+        Swal.fire({
+          icon: "error",
+          title: "خطا",
+          text: "مشکلی در ثبت محصول رخ داد.",
+        });
+      });
+  });
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

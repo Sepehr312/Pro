@@ -151,19 +151,24 @@
             </td>
             <td class="align-middle"><%= item.price %> تومان</td>
             <td class="align-middle">
-              <form action="/admin/products/updateproducts" method="get">
-                <input type="hidden" name="_id" value="<%= item._id %>" />
-                <button type="submit" class="btn btn-outline-success">
-                  ویرایش
-                </button>
+              <form action="/admin/products/updateproducts" method="post">
+                <input type="hidden" name="id" id="id" value="<%= item._id %>">
+                <button
+                type="submit"
+                id="edit-btn"
+                class="btn btn-outline-success"
+              >
+                ویرایش
+              </button>
               </form>
+              
             </td>
             <td class="align-middle">
               <button
                 type="submit"
                 id="delete-btn"
                 class="btn btn-outline-danger"
-                onclick="click_dlete('<%= item._id %>')"
+                onclick="click_delete('<%= item._id %>')"
               >
                 حذف
               </button>
@@ -207,9 +212,20 @@
       row.style.display = match ? "" : "none";
     });
   }
+  //UPDATE
+  // function click_edit(id) {
+  //   const data = { id: id };
+  //   fetch("/admin/products/updateproducts", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(data),
+  //   })
+  // }
 
-  function click_dlete(id) {
-    const deleteProductID=id;
+  //DELETE
+  function click_delete(id) {
     Swal.fire({
       title: "آیا مطمئن هستید؟",
       text: "این عملیات قابل بازگشت نیست!",
@@ -221,10 +237,16 @@
       cancelButtonText: "انصراف",
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log(deleteProductID)
+        const data = {
+          id: id,
+        };
+        // ارسال درخواست حذف به صورت Ajax
         fetch("/admin/products/deleteproducts", {
           method: "POST",
-          body: deleteProductID,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
         })
           .then((response) => response.json())
           .then((data) => {

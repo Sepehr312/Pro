@@ -166,7 +166,8 @@ addUploadBtn.addEventListener("click", function () {
   fileInput.click();
 });
 
-document.getElementById("sort-btn").addEventListener("click", function () {
+document.getElementById("update-btn").addEventListener("click", function () {
+    alert("fgjngf")
   // دریافت مقادیر فرم
   const productName = document.getElementById("productName").value;
   const productDescription =

@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const Joi = require("joi");
 const Product = require("../../models/product");
 const Image = require("../../models/productImage");
 const Category = require("../../models/category");
@@ -28,12 +27,26 @@ module.exports.uploadFile = (req, res) => {
 };
 module.exports.deleteFile = async (req, res) => {
   const { filePath } = req.body;
+  if (filePath) {
+    const imageID = await Image.findOne({ filename: filePath });
+    if (imageID) {
+      const product = await Product.findOneAndUpdate(
+        { images: { $in: [imageID._id] } },
+        { $pull: { images: imageID._id } },
+        { new: true }
+      );
+      if (product) {
+        const deleteimage = await Image.findOneAndDelete({
+          filename: filePath,
+        });
+      }
+    }
+  }
   const fullFilePath = path.join(
     __dirname,
     "../../../uploads/products/",
     filePath
   );
-
   try {
     await fs.promises.access(fullFilePath, fs.constants.F_OK);
   } catch (accessErr) {
@@ -57,7 +70,7 @@ module.exports.getAddProductsForm = async (req, res) => {
   const category = await Category.find();
   res.render("admin/pages/newProducts", { category });
 };
-module.exports.addedproducts = async (req, res) => {
+module.exports.addedProducts = async (req, res) => {
   const { name, description, price, category, images } = req.body;
 
   try {
@@ -94,11 +107,92 @@ module.exports.addedproducts = async (req, res) => {
     });
   }
 };
+//UPDATE
+module.exports.getUpdateProducts = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const category = await Category.find();
+    const product = await Product.findById(id).populate("images");
+    res.render("admin/pages/updateProducts", { category, product });
+  } catch (error) {
+    console.error(error);
+  }
+};
+module.exports.updatedProduct = async (req, res) => {
+  const { productId, name, description, price, category, images } = req.body;
+
+  try {
+    // بررسی وجود شناسه محصول
+    if (!productId) {
+      return res.status(400).json({
+        success: false,
+        message: "شناسه محصول ارسال نشده است.",
+      });
+    }
+
+    // جستجو محصول
+    const existingProduct = await Product.findById(productId);
+    if (!existingProduct) {
+      return res.status(404).json({
+        success: false,
+        message: "محصول یافت نشد",
+      });
+    }
+
+    // ذخیره تصاویر جدید و گرفتن IDs آن‌ها
+    let imageIds = [];
+    if (images && images.length > 0) {
+      imageIds = await Promise.all(
+        images.map(async (filename) => {
+          const image = new Image({ filename });
+          await image.save();
+          return image._id;
+        })
+      );
+    }
+
+    // ساخت آپشن‌های به‌روزرسانی
+    const updateFields = {
+      name: name || existingProduct.name,
+      description: description || existingProduct.description,
+      price: price || existingProduct.price,
+      category: category || existingProduct.category,
+      ...(imageIds.length > 0 && { images: imageIds }), // اگر تصاویری وجود داشته باشد، اضافه کنیم
+    };
+
+    // به‌روزرسانی محصول
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      updateFields,
+      { new: true, runValidators: true } // جدیدترین نسخه سند را برگردانده و اعتبارسنجی‌ها را اجرا کند
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({
+        success: false,
+        message: "محصول یافت نشد.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: updatedProduct,
+      message: "محصول با موفقیت به‌روزرسانی شد.",
+    });
+  } catch (error) {
+    console.error("خطا در به‌روزرسانی محصول:", error);
+    res.status(500).json({
+      success: false,
+      message: "خطا در به‌روزرسانی محصول.",
+    });
+  }
+};
+
 //DELETE
-module.exports.deleteproducts = async (req, res) => {
-    console.log(req.body);
-    try {
-    const id = req.body;
+module.exports.deleteProducts = async (req, res) => {
+  console.log(req.body);
+  try {
+    const id = req.body.id;
     console.log(id);
     if (!id) {
       return res
@@ -133,8 +227,9 @@ module.exports.deleteproducts = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    return res
-      .status(500)
-      .json({ success: false, message: "خطایی در حذف محصول به وجود امده است." });
-  } 
+    return res.status(500).json({
+      success: false,
+      message: "خطایی در حذف محصول به وجود امده است.",
+    });
+  }
 };

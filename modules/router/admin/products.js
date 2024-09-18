@@ -35,13 +35,25 @@ router.post(
   "/addedproducts",
   ensureAuthenticated,
   ensureAdmin,
-  productsController.addedproducts
+  productsController.addedProducts
+);
+router.post(
+  "/updateproducts",
+  ensureAuthenticated,
+  ensureAdmin,
+  productsController.getUpdateProducts
+);
+router.post(
+  "/updatedProduct",
+  ensureAuthenticated,
+  ensureAdmin,
+  productsController.updatedProduct
 );
 router.post(
   "/deleteproducts",
   ensureAuthenticated,
   ensureAdmin,
-  productsController.deleteproducts
+  productsController.deleteProducts
 );
- 
+
 module.exports = router;
