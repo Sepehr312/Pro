@@ -274,7 +274,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById("update-btn").addEventListener("click", function () {
     console.log("دکمه به درستی کار می‌کند");
-    const productId = productIdInput.value; // استفاده صحیح از productId
+    const productId = productIdInput.value;
+    console.log(productId)
     const productName = document.getElementById("productName").value;
     const productDescription = document.getElementById("productDescription").value;
     const productPrice = document.getElementById("productPrice").value;
@@ -325,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function () {
             showConfirmButton: false,
             timer: 1500,
           }).then(() => {
-            window.location.reload();
+            window.location.href = "/admin/products";
           });
         }
       })

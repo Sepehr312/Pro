@@ -1,0 +1,129 @@
+<link rel="stylesheet" href="/css/custom/web/product.css">
+<div class="wrapper">
+  <!-- سایدبار فیلتر -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-content">
+      <div class="search-section">
+        <input
+          type="text"
+          id="product-search"
+          class="form-control"
+          placeholder="جستجو در محصولات..."
+        />
+      </div>
+      <!-- دسته‌بندی -->
+      <%if( category?.length) { %>
+      <div class="filter-section">
+        <p class="filter-title">دسته‌بندی‌ها</p>
+        <% category?.forEach((item, index) => { %>
+        <div>
+          <input type="checkbox" id="<%-item.title%>" />
+          <label for="category1"><%-item.title%></label>
+        </div>
+        <%})%>
+      </div>
+      <%}%>
+      <!-- محدوده قیمت -->
+      <div class="filter-section">
+        <p class="filter-title">محدوده قیمت</p>
+        <div class="price-range">
+          <input type="number" class="form-control" placeholder="از" />
+          <input type="number" class="form-control" placeholder="تا" />
+        </div>
+      </div>
+
+      <!-- فیلترهای بیشتر -->
+      <div class="filter-section">
+        <p class="filter-title">فیلترهای بیشتر</p>
+        <div>
+          <input type="checkbox" id="filter1" />
+          <label for="filter1">تخفیف‌دار</label>
+        </div>
+        <div>
+          <input type="checkbox" id="filter2" />
+          <label for="filter2">موجود در انبار</label>
+        </div>
+      </div>
+
+      <!-- دکمه اعمال فیلتر -->
+      <button class="btn-filter">اعمال فیلتر</button>
+    </div>
+  </div>
+
+  <!-- محتوای اصلی -->
+  <div class="content-wrapper" id="content-wrapper">
+    <div class="content">
+      <div class="sorting-section">
+        <!-- دکمه باز و بسته کردن سایدبار -->
+        <button id="toggle-sidebar" style="cursor: pointer">
+          <i class="bi bi-sliders icon-size" id="toggle-sidebar"></i>
+        </button>
+        <div class="sorting-options">
+          <span>
+            <i class="bi bi-filter-circle icon-size"></i>  مرتب کردن بر اساس:
+          </span>
+          <ul>
+            <li>
+              <a href="#" class="sort-option" data-sort="cheapest">ارزانترین</a>
+            </li>
+            <li>
+              <a href="#" class="sort-option" data-sort="expensive">گرانترین</a>
+            </li>
+            <li>
+              <a href="#" class="sort-option" data-sort="newest">جدیدترین</a>
+            </li>
+            <li>
+              <a href="#" class="sort-option" data-sort="oldest">قدیمی‌ترین</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <main><%- include('../partials/firstPage/freshProducts')%></main>
+    </div>
+  </div>
+</div>
+
+<script>
+  const toggleButton = document.getElementById("toggle-sidebar");
+  const sidebar = document.getElementById("sidebar");
+  const contentWrapper = document.getElementById("content-wrapper");
+
+  toggleButton.addEventListener("click", function () {
+    sidebar.classList.toggle("sidebar-hidden");
+    contentWrapper.classList.toggle("content-expanded");
+  });
+  const searchInput = document.getElementById("product-search");
+  const boxes = document.querySelectorAll(".box");
+
+  searchInput.addEventListener("input", function () {
+    const searchTerm = searchInput.value.toLowerCase();
+    boxes.forEach((box) => {
+      const productName = box.querySelector("h3").innerText.toLowerCase();
+      if (productName.includes(searchTerm)) {
+        box.style.display = "";
+      } else {
+        box.style.display = "none";
+      }
+    });
+  });
+  const sortOptions = document.querySelectorAll(".sort-option");
+
+  sortOptions.forEach((option) => {
+    option.addEventListener("click", function (e) {
+      e.preventDefault(); // جلوگیری از رفرش صفحه
+      const sortType = option.getAttribute("data-sort");
+
+      // ارسال درخواست به سرور با استفاده از fetch یا XMLHttpRequest
+      fetch(`/sort?type=${sortType}`)
+        .then((response) => response.json())
+        .then((data) => {
+          // انجام عملیات با داده‌های برگشتی
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+  });
+</script>

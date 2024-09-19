@@ -122,7 +122,6 @@ module.exports.updatedProduct = async (req, res) => {
   const { productId, name, description, price, category, images } = req.body;
 
   try {
-    // بررسی وجود شناسه محصول
     if (!productId) {
       return res.status(400).json({
         success: false,
@@ -187,7 +186,6 @@ module.exports.updatedProduct = async (req, res) => {
     });
   }
 };
-
 //DELETE
 module.exports.deleteProducts = async (req, res) => {
   console.log(req.body);

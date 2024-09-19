@@ -3,12 +3,11 @@ const expressLayout = require("express-ejs-layouts");
 const flash = require("connect-flash");
 const session = require("express-session");
 const mongoose = require("mongoose");
+const MongoStore = require("connect-mongo")
 const bodyParser = require("body-parser");
 const path = require("path");
 const passport = require("passport");
 require("./modules/config/passport");
-const MongoStore = require("connect-mongo");
-
 const app = express();
 
 const connectDB = require("./modules/config/DB");
@@ -39,7 +38,7 @@ const adminRouter = require("./modules/router/admin");
 const webRouter = require("./modules/router/web");
 app.use("/admin", adminRouter);
 app.use("/", webRouter);
-
+//DATA
 app.use(async (req, res, next) => {
   if (req.user) {
     firstName = req.user.firstName;

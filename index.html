@@ -1,27 +1,144 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>افزودن محتوا هنگام لود</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سایدبار فیلتر محصولات</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      direction: rtl;
+      font-family: 'Vazir', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 300px;
+      background-color: #f8f9fa;
+      border-left: 1px solid #ddd;
+      padding: 20px;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+      overflow-y: auto;
+    }
+
+    .content {
+      margin-right: 320px; /* فاصله دادن به محتوا به خاطر سایدبار */
+      padding: 20px;
+    }
+
+    .filter-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 18px;
+      color: #3a9943;
+    }
+
+    .filter-section {
+      margin-bottom: 25px;
+    }
+
+    .filter-section input[type="checkbox"] {
+      margin-left: 8px;
+    }
+
+    .price-range {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .price-range input {
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-filter {
+      background-color: #3a9943;
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-filter:hover {
+      background-color: #2f7b36;
+    }
+
+    .filter-section label {
+      color: #555;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background-color: #3a9943;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 <body>
-    <h1>صفحه اصلی</h1>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // ایجاد یک عنصر جدید
-            var newParagraph = document.createElement('p');
-            newParagraph.textContent = 'این پاراگراف هنگام لود شدن صفحه اضافه شد.';
-            
-            // افزودن عنصر به body
-            document.body.appendChild(newParagraph);
-        });
-    </script>
+<!-- سایدبار فیلتر -->
+<div class="sidebar">
+  <!-- دسته‌بندی -->
+  <div class="filter-section">
+    <p class="filter-title">دسته‌بندی‌ها</p>
+    <div>
+      <input type="checkbox" id="category1">
+      <label for="category1">دفتر و دفترچه</label>
+    </div>
+    <div>
+      <input type="checkbox" id="category2">
+      <label for="category2">خودکار و روان‌نویس</label>
+    </div>
+    <div>
+      <input type="checkbox" id="category3">
+      <label for="category3">مداد و اتود</label>
+    </div>
+  </div>
+
+  <!-- محدوده قیمت -->
+  <div class="filter-section">
+    <p class="filter-title">محدوده قیمت</p>
+    <div class="price-range">
+      <input type="number" class="form-control" placeholder="از">
+      <input type="number" class="form-control" placeholder="تا">
+    </div>
+  </div>
+
+  <!-- فیلترهای بیشتر -->
+  <div class="filter-section">
+    <p class="filter-title">فیلترهای بیشتر</p>
+    <div>
+      <input type="checkbox" id="filter1">
+      <label for="filter1">تخفیف‌دار</label>
+    </div>
+    <div>
+      <input type="checkbox" id="filter2">
+      <label for="filter2">موجود در انبار</label>
+    </div>
+  </div>
+
+  <!-- دکمه اعمال فیلتر -->
+  <button class="btn-filter">اعمال فیلتر</button>
+</div>
+
+<!-- محتوای اصلی -->
+<div class="content">
+  <h2>لیست محصولات</h2>
+  <p>اینجا لیست محصولات قرار می‌گیرد...</p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

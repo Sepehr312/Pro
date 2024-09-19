@@ -12,7 +12,7 @@ module.exports.getMain = async (req, res) => {
   const information = await Information.find();
   const product = await Product.find().populate("images");
 
-  res.render("frontEnd/pages/firstPage", {
+  res.render("frontEnd/pages/products", {
     slider,
     category,
     deal,
